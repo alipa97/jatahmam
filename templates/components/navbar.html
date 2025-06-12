@@ -1,0 +1,13 @@
+<nav class="bg-pink-600 text-white p-4 shadow">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">Dashboard Jatah Mam</h1>
+        <div>
+            <a href="{{ url_for('dashboard_bp.home') }}" class="mr-4 hover:underline">Home</a>
+            <a href="{{ url_for('santri_bp.santri') }}" class="mr-4 hover:underline">Santri</a>
+            <a href="{{ url_for('lauk_bp.lauk') }}" class="mr-4 hover:underline">Lauk</a>
+            <a href="{{ url_for('sesi_bp.sesi') }}" class="mr-4 hover:underline">Session</a>
+            <a href="{{ url_for('log_bp.log') }}" class="mr-4 hover:underline">Log</a>
+            <a href="{{ url_for('result_bp.result') }}" class="mr-4 hover:underline">Result</a>
+        </div>
+    </div>
+</nav>

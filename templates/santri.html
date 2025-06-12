@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Santri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    {% include 'components/navbar.html' %}
+
+    <!-- content -->
+    <div class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-semibold mb-4">Data Santri</h2>
+
+        <div class="bg-white p-4 rounded shadow mb-6">
+            <h2 class="text-lg font-semibold mb-2">
+                {% if edit_mode %} Edit Santri {% else %} Tambah Santri {% endif %}
+            </h2>
+            <form action="{% if edit_mode %}{{ url_for('santri_bp.update_santri', nis=santri_data.nis) }}{% else %}{{ url_for('santri_bp.add_santri') }}{% endif %}" method="POST" class="mb-4">
+                {% if edit_mode %}
+                <input type="hidden" name="nis_lama" value="{{ santri_data.nis }}">
+                {% endif %}
+                <input type="text" name="nis" placeholder="NIS Santri" class="p-2 border rounded mr-2" required
+                    value="{% if edit_mode %}{{ santri_data.nis }}{% endif %}">
+                <input type="text" name="nama" placeholder="Nama Santri" class="p-2 border rounded mr-2" required
+                    value="{% if edit_mode %}{{ santri_data.nama }}{% endif %}">
+                <input type="text" name="kelas" placeholder="Kelas" class="p-2 border rounded mr-2" required
+                    value="{% if edit_mode %}{{ santri_data.kelas }}{% endif %}">
+                <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded">
+                    {% if edit_mode %}Update{% else %}Tambah{% endif %}
+                </button>
+                {% if edit_mode %}
+                <a href="{{ url_for('santri_bp.santri') }}" class="ml-2 text-gray-600 hover:underline">Batal</a>
+                {% endif %}
+            </form>
+        </div>
+
+        {% if error %}
+            <div class="text-red-600 mb-2">{{ error }}</div>
+        {% endif %}
+
+        <table class="w-full bg-white shadow rounded center">
+            <thead>
+                <tr class="bg-pink-200">
+                    <th class="p-2">NIS</th>
+                    <th class="p-2">Nama</th>
+                    <th class="p-2">Kelas</th>
+                    <th class="p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in santri_list %}
+                <tr class="border-t text-center">
+                    <td class="p-2">{{ s.nis }}</td>
+                    <td class="p-2">{{ s.nama }}</td>
+                    <td class="p-2">{{ s.kelas }}</td>
+                    <td class="p-2">
+                        <a href="{{ url_for('santri_bp.get_edit_santri', nis=s.nis) }}" class="text-blue-600 hover:underline">Edit</a>
+                        <a href="{{ url_for('santri_bp.delete_santri', id=s._id) }}" class="text-red-600 hover:underline">Hapus</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="p-2 text-center">Belum ada data santri</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

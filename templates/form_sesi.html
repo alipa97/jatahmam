@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Sesi Makan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    {% include 'components/navbar.html' %}
+
+    <div class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-semibold mb-4">Tambah Sesi Makan</h2>
+
+        <div class="bg-white p-6 rounded shadow">
+            <form action="{{ url_for('sesi_bp.tambah_sesi') }}" method="POST" class="space-y-4">
+
+                <div>
+                    <label for="tanggal" class="block font-medium">Tanggal</label>
+                    <input type="date" name="tanggal" required class="w-full p-2 border rounded">
+                </div>
+
+                <div>
+                    <label for="waktu" class="block font-medium">Waktu</label>
+                    <select name="waktu" required class="w-full p-2 border rounded">
+                        <option value="pagi">Pagi</option>
+                        <option value="siang">Siang</option>
+                        <option value="malam">Malam</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="lauk_1" class="block font-medium">Lauk 1</label>
+                    <select name="lauk_1" required class="w-full p-2 border rounded">
+                        {% for lauk in lauk_list %}
+                        <option value="{{ lauk._id }}">{{ lauk.nama_lauk }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="lauk_2" class="block font-medium">Lauk 2</label>
+                    <select name="lauk_2" required class="w-full p-2 border rounded">
+                        {% for lauk in lauk_list %}
+                        <option value="{{ lauk._id }}">{{ lauk.nama_lauk }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="lauk_3" class="block font-medium">Lauk 3</label>
+                    <select name="lauk_3" required class="w-full p-2 border rounded">
+                        {% for lauk in lauk_list %}
+                        <option value="{{ lauk._id }}">{{ lauk.nama_lauk }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded">
+                    Mulai Sesi
+                </button>
+                <a href="{{ url_for('sesi_bp.sesi') }}" class="ml-4 text-gray-600 hover:underline">Kembali</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

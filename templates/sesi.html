@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Santri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    {% include 'components/navbar.html' %}
+
+    <!-- content -->
+    <div class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-semibold mb-4">Data Lauk</h2>
+        <div class="mb-4">
+            <a href="{{ url_for('santri_bp.santri') }}" class="bg-pink-600 text-white px-4 py-2 rounded">Tambah Sesi</a>
+        </div>
+        <table class="w-full bg-white shadow rounded center">
+            <thead>
+                <tr class="bg-pink-200">
+                    <th class="p-2">Tanggal</th>
+                    <th class="p-2">Waktu</th>
+                    <th class="p-2">Lauk 1</th>
+                    <th class="p-2">Lauk 2</th>
+                    <th class="p-2">Lauk 3</th>
+                    <th class="p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sesi_list %}
+                <tr class="border-t text-center">
+                    <td class="p-2">{{ s.tanggal }}</td>
+                    <td class="p-2">{{ s.waktu }}</td>
+                    <td class="p-2">{{ s.lauk_1_nama }}</td>
+                    <td class="p-2">{{ s.lauk_2_nama }}</td>
+                    <td class="p-2">{{ s.lauk_3_nama }}</td>
+                    <td class="p-2">
+                        <a href="#" class="text-blue-600 hover:underline">Detail</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="p-2 text-center">Belum ada data sesi makan</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

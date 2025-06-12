@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Santri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    {% include 'components/navbar.html' %}
+
+    <!-- content -->
+    <div class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-semibold mb-4">Data Lauk</h2>
+        <table class="w-full bg-white shadow rounded center">
+            <thead>
+                <tr class="bg-pink-200">
+                    <th class="p-2">NIS</th>
+                    <th class="p-2">Sesi</th>
+                    <th class="p-2">Lauk 1</th>
+                    <th class="p-2">Lauk 2</th>
+                    <th class="p-2">Lauk 3</th>
+                    <!-- <th class="p-2">Aksi</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in Log_list %}
+                <tr class="border-t text-center">
+                    <td class="p-2">{{ s.nis }}</td>
+                    <td class="p-2">{{ s.tanggal }} {{ s.waktu }}</td>
+                    <td class="p-2">{{ s.lauk_1 }}</td>
+                    <td class="p-2">{{ s.lauk_2 }}</td>
+                    <td class="p-2">{{ s.lauk_3 }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="3" class="p-2 text-center">Belum ada data Log Santri</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
