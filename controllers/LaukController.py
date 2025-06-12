@@ -36,7 +36,7 @@ def get_edit_lauk(id):
 # Update lauk
 @lauk_bp.route('/lauk/update/<id>', methods=['POST'])
 def update_lauk(id):
-    nama_lauk_baru = request.form['nama_lauk_baru'].strip().lower()
+    nama_lauk_baru = request.form['nama_lauk'].strip().lower()
     nama_lauk_lama = request.form['nama_lauk_lama'].strip().lower()
 
     # Cek jika nama baru berbeda dan sudah ada yang pakai

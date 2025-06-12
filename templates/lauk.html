@@ -22,7 +22,7 @@
                 {% if edit_mode %}
                 <input type="hidden" name="nama_lauk_lama" value="{{ lauk_data.nama_lauk }}">
                 {% endif %}
-                <input type="text" name="nama_lauk_baru" placeholder="Nama Lauk" class="p-2 border rounded mr-2" required
+                <input type="text" name="nama_lauk" placeholder="Nama Lauk" class="p-2 border rounded mr-2" required
                     value="{% if edit_mode %}{{ lauk_data.nama_lauk }}{% endif %}">
                 <button type="submit" class="bg-pink-600 text-white px-4 py-2 rounded">
                     {% if edit_mode %}Update{% else %}Tambah{% endif %}

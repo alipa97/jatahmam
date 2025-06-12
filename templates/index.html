@@ -30,6 +30,28 @@
             </div> -->
         </div>
     </div>
+        <!-- Statistik Pengambilan Lauk -->
+        <h3>Statistik Pengambilan Lauk</h3>
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nama Lauk</th>
+                    <th>Jumlah Diambil</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lauk in lauk_stats %}
+                <tr>
+                    <td>{{ lauk.nama_lauk }}</td>
+                    <td>{{ lauk.count }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2">Belum ada data pengambilan lauk.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     <!-- Footer -->
     <!-- <footer class="text-center text-sm text-gray-500 mt-10 pb-4">
