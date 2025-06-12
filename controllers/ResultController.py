@@ -4,7 +4,7 @@ from config import db
 result_bp = Blueprint('result_bp', __name__)
 
 # Setup MongoDB
-result_collection = db["result"]
+result_collection = db["results"]
 
 # Tampilkan result
 @result_bp.route('/result')

@@ -27,11 +27,15 @@
             <tbody>
                 {% for s in Log_list %}
                 <tr class="border-t text-center">
-                    <td class="p-2">{{ s.nis }}</td>
-                    <td class="p-2">{{ s.tanggal }} {{ s.waktu }}</td>
-                    <td class="p-2">{{ s.lauk_1 }}</td>
-                    <td class="p-2">{{ s.lauk_2 }}</td>
-                    <td class="p-2">{{ s.lauk_3 }}</td>
+                    <td class="p-2">{{ s.NIS }}</td>
+                    <td class="p-2">{{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S') if result.timestamp else '-' }}</td>
+                    <td class="p-2">
+                        <ul class="list-disc pl-5">
+                            {% for lauk, count in result.frames.items() %}
+                                <li>{{ lauk }}: {{ count }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
                 </tr>
                 {% else %}
                 <tr><td colspan="3" class="p-2 text-center">Belum ada data Log Santri</td></tr>
