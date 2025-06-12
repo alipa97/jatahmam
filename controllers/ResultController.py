@@ -10,4 +10,4 @@ result_collection = db["result"]
 @result_bp.route('/result')
 def result():
     result_list = result_collection.find()
-    return render_template('result.html', result_list-result_list)
+    return render_template('result.html', result_list=result_list)
