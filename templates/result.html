@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Data Santri</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Data Santri</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- Navbar -->
-    {% include 'components/navbar.html' %}
+  <!-- Navbar -->
+  {% include 'components/navbar.html' %}
 
-    <!-- content -->
-    <div class="container mx-auto px-4 py-6">
-        <h2 class="text-2xl font-semibold mb-4">Hasil Absensi Santri</h2>
-        <table class="w-full bg-white shadow rounded center">
-            <thead>
-                <tr class="bg-pink-200">
-                    <th class="p-2">NIS</th>
-                    <th class="p-2">Sesi</th>
-                    <th class="p-2">Lauk 1</th>
-                    <th class="p-2">Lauk 2</th>
-                    <th class="p-2">Lauk 3</th>
-                    <!-- <th class="p-2">Aksi</th> -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in Log_list %}
-                <tr class="border-t text-center">
-                    <td class="p-2">{{ s.NIS }}</td>
-                    <td class="p-2">{{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S') if result.timestamp else '-' }}</td>
-                    <td class="p-2">
-                        <ul class="list-disc pl-5">
-                            {% for lauk, count in result.frames.items() %}
-                                <li>{{ lauk }}: {{ count }}</li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-                {% else %}
-                <tr><td colspan="3" class="p-2 text-center">Belum ada data Log Santri</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+  <!-- Content -->
+  <div class="container mx-auto px-4 py-6">
+    <h2 class="text-2xl font-semibold mb-4">Hasil Absensi Santri</h2>
+
+    <!-- Filter Form -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <form method="get" class="flex flex-wrap items-center gap-4">
+        <label for="date" class="font-medium">Tanggal:</label>
+        <input type="date" name="date" id="date" value="{{ selected_date or '' }}" class="border px-2 py-1 rounded" />
+
+        <label for="sesi" class="font-medium">Sesi:</label>
+        <select name="sesi" id="sesi" class="border px-2 py-1 rounded">
+          <option value="pagi" {% if selected_sesi == 'pagi' %}selected{% endif %}>Pagi</option>
+          <option value="siang" {% if selected_sesi == 'siang' %}selected{% endif %}>Siang</option>
+          <option value="malam" {% if selected_sesi == 'malam' %}selected{% endif %}>Malam</option>
+        </select>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Filter</button>
+      </form>
     </div>
+
+    <!-- Debug (optional, remove if udah yakin data aman) -->
+    {# <pre class="text-sm bg-gray-200 p-2 mb-4 rounded">{{ result_list | safe }}</pre> #}
+
+    <!-- Tabel Hasil -->
+    <table class="w-full bg-white shadow rounded">
+      <thead>
+        <tr class="bg-pink-200 text-center">
+          <th class="p-2">NIS</th>
+          <th class="p-2">Tanggal & Waktu</th>
+          <th class="p-2">Lauk Diambil</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if result_list %}
+          {% for result in result_list %}
+          <tr class="border-t text-center">
+            <td class="p-2">{{ result.NIS or '-' }}</td>
+            <td class="p-2">
+            {{ result.timestamp_local.strftime('%Y-%m-%d %H:%M:%S') if result.timestamp_local else '-' }}
+            </td>
+
+            <td class="p-2">
+              {% if result.frames %}
+              <ul class="list-disc pl-5 text-left">
+                {% for lauk, count in result.frames.items() %}
+                  <li>{{ lauk }}: {{ count }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="3" class="p-4 text-center text-gray-500">
+              Tidak ada data absensi untuk filter yang dipilih.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 
 </body>
 </html>
