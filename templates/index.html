@@ -13,41 +13,50 @@
 
   <!-- Content -->
   <div class="container mx-auto px-4 py-6">
-    <h2 class="text-2xl font-semibold mb-4">Welcome to Your Dashboard Jatah Mam!</h2>
+    <h2 class="text-2xl font-semibold mb-4">Dashboard Jatah Mam</h2>
 
     <!-- Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <a href="#" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+      <div class="bg-white p-6 rounded-lg shadow">
         <h3 class="text-lg font-medium mb-2">Total Santri</h3>
         <p class="text-3xl font-bold text-blue-600">{{ total_santri }}</p>
-      </a>
+      </div>
     </div>
 
     <!-- Filter Form -->
     <div class="bg-white p-4 rounded shadow mb-6">
       <h2 class="text-xl font-semibold mb-2">Statistik Pengambilan Lauk</h2>
       <form method="get" class="flex flex-wrap items-center gap-4">
-        <label for="date">Tanggal:</label>
+        <label for="date">Filter hingga tanggal:</label>
         <input type="date" name="date" value="{{ end_date }}" class="border px-2 py-1 rounded" />
-        
+
         <label for="sesi">Sesi:</label>
         <select name="sesi" class="border px-2 py-1 rounded">
           <option value="pagi" {% if selected_sesi == 'pagi' %}selected{% endif %}>Pagi</option>
           <option value="siang" {% if selected_sesi == 'siang' %}selected{% endif %}>Siang</option>
           <option value="malam" {% if selected_sesi == 'malam' %}selected{% endif %}>Malam</option>
         </select>
+
         <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Filter</button>
       </form>
+      <p class="text-sm text-gray-600 mt-2">
+        Menampilkan data sesi <strong>{{ selected_sesi }}</strong> dari tanggal 
+        <strong>{{ start_date }}</strong> sampai <strong>{{ end_date }}</strong>
+      </p>
     </div>
 
     <!-- Leaderboard -->
     <div class="bg-white p-4 rounded shadow mb-6">
       <h3 class="text-lg font-semibold mb-2">Leaderboard (Top 3 Lauk Diambil)</h3>
+      {% if leaderboard %}
       <ol class="list-decimal ml-6">
         {% for item in leaderboard %}
           <li>{{ item.nama_lauk }} - {{ item.count }} kali</li>
         {% endfor %}
       </ol>
+      {% else %}
+      <p class="text-gray-600">Belum ada data lauk pada rentang waktu ini.</p>
+      {% endif %}
     </div>
 
     <!-- Chart -->
@@ -58,14 +67,15 @@
   </div>
 
   <!-- Chart.js Script -->
-  {% set labels = lauk_stats | map(attribute='nama_lauk') | list %}
-  {% set counts = lauk_stats | map(attribute='count') | list %}
   <script>
+    const laukLabels = {{ lauk_stats | map(attribute='nama_lauk') | list | tojson | safe }};
+    const laukCounts = {{ lauk_stats | map(attribute='count') | list | tojson | safe }};
+
     const laukData = {
-      labels: {{ labels | tojson | safe }},
+      labels: laukLabels,
       datasets: [{
         label: 'Jumlah Diambil',
-        data: {{ counts | tojson }},
+        data: laukCounts,
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1

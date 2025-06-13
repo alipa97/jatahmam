@@ -1,23 +1,19 @@
 from flask import Blueprint, render_template, request
 from config import db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+import pytz
 
-# Setup Blueprint dan koleksi MongoDB
 dashboard_bp = Blueprint('dashboard_bp', __name__)
 santri_collection = db["santri"]
 result_collection = db["results"]
-lauk_collection = db["lauk"]
 
-# Home
 @dashboard_bp.route('/')
 def home():
     total_santri = santri_collection.count_documents({})
 
-    # Ambil parameter filter
     selected_date_str = request.args.get('date')
     selected_sesi = request.args.get('sesi', 'pagi')
 
-    # Default: hari ini dan 7 hari ke belakang
     today = datetime.now().date()
     if selected_date_str:
         try:
@@ -26,34 +22,66 @@ def home():
             end_date = today
     else:
         end_date = today
+
     start_date = end_date - timedelta(days=6)
 
-    # Filter data result berdasarkan rentang tanggal dan sesi
-    query = {
-        'timestamp': {
-            '$gte': datetime.combine(start_date, datetime.min.time()),
-            '$lte': datetime.combine(end_date, datetime.max.time())
-        },
-        'sesi': selected_sesi
+    # WIB timezone
+    wib = pytz.timezone("Asia/Jakarta")
+
+    # Sesi ranges
+    sesi_ranges = {
+        'pagi': (time(7, 0), time(8, 0)),
+        'siang': (time(12, 30), time(14, 30)),
+        'malam': (time(19, 30), time(20, 30)),
     }
+    start_time, end_time = sesi_ranges.get(selected_sesi, (time(0, 0), time(23, 59)))
+    print(f"Selected sesi: {selected_sesi}, Start time: {start_time}, End time: {end_time}")
 
-    result_list = list(result_collection.find(query))
+    # Ambil semua data dari Mongo
+    all_results = list(result_collection.find({}))
+    print(f"Total results fetched: {len(all_results)}")
+    result_list = []
 
-    # Hitung jumlah pengambilan lauk
+    for r in all_results:
+        try:
+            ts_str = r.get('timestamp')
+            if not ts_str:
+                continue
+
+            # Parse ISO timestamp string to datetime UTC
+            ts_utc = datetime.strptime(ts_str, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc)
+            ts_local = ts_utc.astimezone(wib)
+            print(f"Processing result with timestamp: {ts_local.date()}")
+
+            # Filter: Tanggal dalam 7 hari terakhir + waktu sesi
+            # if start_date <= ts_local.date() <= end_date:
+            #     print("ish")
+            # if start_time <= ts_local.time() <= end_time:
+            #     print("damn")
+            if start_date <= ts_local.date() <= end_date and start_time <= ts_local.time() <= end_time:
+                r['timestamp_local'] = ts_local
+                result_list.append(r)
+                print("bla")
+        except Exception:
+            continue
+
+    print(f"Filtered result count: {len(result_list)}")
+
+    # Hitung jumlah lauk
     lauk_total = {}
     for result in result_list:
         frames = result.get('frames', {})
         for nama_lauk, count in frames.items():
-            lauk_total[nama_lauk] = lauk_total.get(nama_lauk, 0) + int(count)
+            try:
+                lauk_total[nama_lauk] = lauk_total.get(nama_lauk, 0) + int(count)
+            except (ValueError, TypeError):
+                continue
 
-    # Ubah ke list untuk template
     lauk_stats = [
-        {'nama_lauk': nama_lauk, 'count': count}
+        {"nama_lauk": nama_lauk, "count": count}
         for nama_lauk, count in lauk_total.items()
     ]
-
-    # Leaderboard (top 3 lauk)
-    lauk_stats_sorted = sorted(lauk_stats, key=lambda x: x['count'], reverse=True)
+    lauk_stats_sorted = sorted(lauk_stats, key=lambda x: x["count"], reverse=True)
     leaderboard = lauk_stats_sorted[:3]
 
     return render_template(
